@@ -145,23 +145,41 @@ void deleteTodo(int desiredIndex) {
 void updateTodo(int desiredIndex) {
     todo *temp;
     char title[100];
+    size_t len;
 
     temp = start;
 
-    printf("\n Digite o novo título da tarefa: ");
+    if (start == NULL) {
+        printf("\nA lista está vazia. Não há tarefas para atualizar.\n");
+        return;
+    }
+    
+    while (temp != NULL && temp->index != desiredIndex) {
+        temp = temp->next;
+    }
+
+    if (temp == NULL) {
+        printf("\nTarefa %d não encontrada.\n", desiredIndex);
+        return;
+    }
+
+    printf("\n Digite o novo título da tarefa %d: ", desiredIndex);
     fgets(title, sizeof(title), stdin);
+    
     // Remove \n
-    size_t len = strlen(title);
+    len = strlen(title);
     if (len > 0 && title[len - 1] == '\n') {
         title[len - 1] = '\0';
     }
 
-    while (temp->index != desiredIndex) {
-        temp = temp->next;
+    if (strlen(title) > 0) {
+        strcpy(temp->title, title);
+        printf("\nTarefa %d atualizada com sucesso para: %s\n", desiredIndex, title);
+        return;
+    } else {
+        printf("O título não pode ser vazio!\n");
+        return;
     }
-    
-    strcpy(temp->title, title);
-    return;
 }
 
 void getTodoList() {
@@ -232,6 +250,8 @@ void welcomeUser() {
     printf("* AO SEU APLICATIVO DE TAREFAS!                      *\n");
     printf("* \n");
     printf("* Vamos organizar o seu dia!                         *\n");
+    printf("* \n");
+    printf("* Pressione Enter para começar!                      *\n");
     printf("* \n");
     printf("==================================================================\n\n");
     getchar();
