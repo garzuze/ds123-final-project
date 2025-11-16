@@ -23,6 +23,7 @@ void createTodo();
 void fixIndexes();
 void deleteTodo(int desiredIndex);
 void updateTodo(int desiredIndex);
+void freeList();
 
 int main() {
     int choice;
@@ -60,6 +61,7 @@ int main() {
                 break;
             case 5:
                 getTodoList();
+                freeList();
                 exit(0);
                 break;
             default:
@@ -256,4 +258,17 @@ void welcomeUser() {
     printf("==================================================================\n\n");
     getchar();
     clearTerminal();
+}
+
+void freeList() {
+    todo *current = start;
+    todo *next;
+
+    while (current != NULL) {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+
+    start = NULL;
 }
