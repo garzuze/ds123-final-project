@@ -18,17 +18,13 @@ todo *start = NULL;
 void welcomeUser();
 void clearTerminal();
 void getTodoList();
+void createTodo();
+void fixIndexes();
 
 int main() {
     int choice;
+    int c;
     welcomeUser();
-    todo *t;
-
-    t = (todo *)calloc(1, sizeof(todo));
-    start = t;
-    strcpy(t->title, "Teste");
-    t->index = 1;
-    start->link = NULL;
     while (1) {
         printf("\n 1 - Ver sua lista de tarefas;");
         printf("\n 2 - Criar uma tarefa;");
@@ -37,9 +33,14 @@ int main() {
         printf("\n 5 - Sair;");
         printf("\n\n Digite sua escolha: ");
         scanf("%d", &choice);
+        // Limpa o buffer de entrada para remover \n
+        while ((c = getchar()) != '\n' && c != EOF);
         switch(choice) {
             case 1:
                 getTodoList();
+                break;
+            case 2:
+                createTodo();
                 break;
             case 5:
                 exit(0);
@@ -47,6 +48,46 @@ int main() {
             default:
                 printf("\nOpção não encontrada\n");
         }
+    }
+    return 0;
+}
+
+void createTodo() {
+    todo *t, *temp;
+    char choice;
+    char c;
+    clearTerminal();
+    
+    temp = (todo *)calloc(1, sizeof(todo));
+    printf("\n Digite a tarefa: ");
+    fgets(temp->title, sizeof(temp->title), stdin);
+    // Remove \n
+    size_t len = strlen(temp->title);
+    if (len > 0 && temp->title[len - 1] == '\n') {
+        temp->title[len - 1] = '\0';
+    }
+    
+    if (start == NULL) {
+        // Primeira tarefa: o start aponta para o novo nó
+        start = temp;
+    } else {
+        t = start;
+        while (t->link != NULL) {
+            t = t->link;
+        }
+        // Último nó agora aponta para o novo nó
+        t->link = temp;
+    }
+    fixIndexes();
+    
+    printf("Quer adicionar mais uma tarefa? (s/n): ");
+    choice = getchar();
+    while ((c = getchar()) != '\n' && c != EOF);
+    clearTerminal();
+    if (choice == 's') {
+        createTodo();
+    } else {
+        return;
     }
 }
 
@@ -56,11 +97,25 @@ void getTodoList() {
     temp = start;
     if (start == NULL) {
         printf("\nLista de tarefas vazia.\n");
+        return;
     }
-
+    
+    printf("\n--- Sua Lista de Tarefas ---\n");
     while (temp != NULL) {
         printf("%d - ", temp->index);
         printf("%s\n", temp->title);
+        temp = temp->link;
+    }
+    printf("----------------------------\n");
+}
+
+void fixIndexes() {
+    todo *temp;
+    int i = 1;
+    temp = start;
+    while (temp != NULL) {
+        temp->index = i;
+        i++;
         temp = temp->link;
     }
 }
