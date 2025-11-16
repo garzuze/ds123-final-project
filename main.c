@@ -3,13 +3,13 @@
 #include <string.h>
 typedef struct ToDo todo;
 
-// Resolvi fazer um projeto com LinkedLists para treinar conceitos de estrutras
+// Resolvi fazer um projeto com nextedLists para treinar conceitos de estrutras
 // de dados :)
 
 // Node que representa uma tarefa e contém um ponteiro para a próxima tarefa
 struct ToDo {
     char title[100];
-    todo *link;
+    todo *next;
     int index; // Número da tarefa
 };
 
@@ -20,6 +20,7 @@ void clearTerminal();
 void getTodoList();
 void createTodo();
 void fixIndexes();
+void deleteTodo(int desiredIndex);
 
 int main() {
     int choice;
@@ -41,6 +42,12 @@ int main() {
                 break;
             case 2:
                 createTodo();
+                break;
+            case 3:
+                int desiredIndex;
+                printf("\n Digite o número da tarefa que você deseja remover: ");
+                scanf("%d", &desiredIndex);
+                deleteTodo(desiredIndex);
                 break;
             case 5:
                 exit(0);
@@ -72,11 +79,11 @@ void createTodo() {
         start = temp;
     } else {
         t = start;
-        while (t->link != NULL) {
-            t = t->link;
+        while (t->next != NULL) {
+            t = t->next;
         }
         // Último nó agora aponta para o novo nó
-        t->link = temp;
+        t->next = temp;
     }
     fixIndexes();
     
@@ -88,6 +95,33 @@ void createTodo() {
         createTodo();
     } else {
         return;
+    }
+}
+
+void deleteTodo(int desiredIndex) {
+    todo *temp, *temp1;
+
+    temp1 = start;
+    temp = start->next;
+
+    while (1) {
+        if (temp1->index == desiredIndex) {
+            start = start->next;
+            free(temp1);
+            fixIndexes();
+            return;
+        }
+
+        if (temp->index == desiredIndex) {
+            temp1->next = temp->next;
+            free(temp);
+            fixIndexes();
+            return;
+        } else {
+            temp1 = temp1->next;
+            temp = temp->next;
+        }
+
     }
 }
 
@@ -104,7 +138,7 @@ void getTodoList() {
     while (temp != NULL) {
         printf("%d - ", temp->index);
         printf("%s\n", temp->title);
-        temp = temp->link;
+        temp = temp->next;
     }
     printf("----------------------------\n");
 }
@@ -116,7 +150,7 @@ void fixIndexes() {
     while (temp != NULL) {
         temp->index = i;
         i++;
-        temp = temp->link;
+        temp = temp->next;
     }
 }
 
