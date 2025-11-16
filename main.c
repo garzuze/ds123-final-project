@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 typedef struct ToDo todo;
 
 // Resolvi fazer um projeto com LinkedLists para treinar conceitos de estrutras
@@ -17,10 +17,18 @@ todo *start = NULL;
 
 void welcomeUser();
 void clearTerminal();
+void getTodoList();
 
 int main() {
     int choice;
     welcomeUser();
+    todo *t;
+
+    t = (todo *)calloc(1, sizeof(todo));
+    start = t;
+    strcpy(t->title, "Teste");
+    t->index = 1;
+    start->link = NULL;
     while (1) {
         printf("\n 1 - Ver sua lista de tarefas;");
         printf("\n 2 - Criar uma tarefa;");
@@ -30,12 +38,30 @@ int main() {
         printf("\n\n Digite sua escolha: ");
         scanf("%d", &choice);
         switch(choice) {
+            case 1:
+                getTodoList();
+                break;
             case 5:
                 exit(0);
                 break;
             default:
                 printf("\nOpção não encontrada\n");
         }
+    }
+}
+
+void getTodoList() {
+    clearTerminal();
+    todo *temp;
+    temp = start;
+    if (start == NULL) {
+        printf("\nLista de tarefas vazia.\n");
+    }
+
+    while (temp != NULL) {
+        printf("%d - ", temp->index);
+        printf("%s\n", temp->title);
+        temp = temp->link;
     }
 }
 
