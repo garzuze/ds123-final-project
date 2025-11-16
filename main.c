@@ -24,6 +24,7 @@ void fixIndexes();
 void deleteTodo(int desiredIndex);
 void updateTodo(int desiredIndex);
 void freeList();
+void loadTodos();
 
 int main() {
     int choice;
@@ -31,6 +32,8 @@ int main() {
     int desiredIndex;
 
     welcomeUser();
+    loadTodos();
+    
     while (1) {
         printf("\n 1 - Ver sua lista de tarefas;");
         printf("\n 2 - Criar uma tarefa;");
@@ -70,6 +73,48 @@ int main() {
         }
     }
     return 0;
+}
+
+void loadTodos() {
+    char line[256];
+    char title[100];
+    int index;
+    todo *temp = NULL;
+
+    tasksFilePointer = fopen("tasks.txt", "r");
+
+    if (tasksFilePointer == NULL) {
+        fclose(tasksFilePointer);
+        return;
+    }
+
+    // Pula a primeira linha
+    if (fgets(line, sizeof(line), tasksFilePointer) == NULL) {
+        fclose(tasksFilePointer);
+        return;
+    }
+
+    // Tenta ler as tarefas no formato que estão estruturadas no arquivo
+    // Sempre adiciona um novo node ao último. Fluxo ideal: start == NULL 
+    // na primeira iteração; vai adicionando os próximos ao start
+    while (fscanf(tasksFilePointer, "%d - %[^\n]\n", &index, title) == 2) {
+        todo *newNode = (todo *)calloc(1, sizeof(todo));
+        strcpy(newNode->title, title);
+        newNode->index = index;
+        newNode->next = NULL;
+
+        if (start == NULL) {
+            start = newNode;
+            temp = start;
+        } else {
+            temp->next = newNode;
+            temp = newNode;
+        }
+
+    }
+    fclose(tasksFilePointer);
+    fixIndexes(); 
+    printf("\n(Tarefas carregadas com sucesso!)\n");
 }
 
 void createTodo() {
