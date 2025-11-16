@@ -14,6 +14,7 @@ struct ToDo {
 };
 
 todo *start = NULL;
+FILE *tasksFilePointer;
 
 void welcomeUser();
 void clearTerminal();
@@ -58,9 +59,11 @@ int main() {
                 updateTodo(desiredIndex);
                 break;
             case 5:
+                getTodoList();
                 exit(0);
                 break;
             default:
+                getTodoList();
                 printf("\nOpção não encontrada\n");
         }
     }
@@ -141,8 +144,8 @@ void updateTodo(int desiredIndex) {
     printf("\n Digite o novo título da tarefa: ");
     fgets(title, sizeof(title), stdin);
     // Remove \n
-    size_t len = strlen(temp->title);
-    if (len > 0 && temp->title[len - 1] == '\n') {
+    size_t len = strlen(title);
+    if (len > 0 && title[len - 1] == '\n') {
         title[len - 1] = '\0';
     }
 
@@ -158,18 +161,34 @@ void getTodoList() {
     clearTerminal();
     todo *temp;
     temp = start;
+    tasksFilePointer = fopen("tasks.txt", "w");
+
+    if (tasksFilePointer == NULL) {
+        printf("Erro ao abrir o arquivo!\n");
+        return;
+    }
+
     if (start == NULL) {
         printf("\nLista de tarefas vazia.\n");
+        fprintf(tasksFilePointer, "Lista de tarefas vazia.\n");
+        fclose(tasksFilePointer);
         return;
     }
     
     printf("\n--- Sua Lista de Tarefas ---\n");
+    fprintf(tasksFilePointer, "--- Lista de Tarefas ---\n");
     while (temp != NULL) {
         printf("%d - ", temp->index);
         printf("%s\n", temp->title);
+        
+        fprintf(tasksFilePointer, "%d - ", temp->index);
+        fprintf(tasksFilePointer, "%s\n", temp->title);
         temp = temp->next;
     }
     printf("----------------------------\n");
+    fprintf(tasksFilePointer, "----------------------------\n");
+    fclose(tasksFilePointer); 
+    printf("\n(Lista salva em tasks.txt)\n");
 }
 
 void fixIndexes() {
