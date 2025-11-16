@@ -3,7 +3,7 @@
 #include <string.h>
 typedef struct ToDo todo;
 
-// Resolvi fazer um projeto com nextedLists para treinar conceitos de estrutras
+// Resolvi fazer um projeto com LinkedLists para treinar conceitos de estrutras
 // de dados :)
 
 // Node que representa uma tarefa e contém um ponteiro para a próxima tarefa
