@@ -16,10 +16,32 @@ struct ToDo {
 todo *start = NULL;
 
 void welcomeUser();
+void clearTerminal();
 
 int main() {
     int choice;
     welcomeUser();
+    while (1) {
+        printf("\n 1 - Ver sua lista de tarefas;");
+        printf("\n 2 - Criar uma tarefa;");
+        printf("\n 3 - Deletar uma tarefa;");
+        printf("\n 4 - Atualizar uma tarefa;");
+        printf("\n 5 - Sair;");
+        printf("\n\n Digite sua escolha: ");
+        scanf("%d", &choice);
+        switch(choice) {
+            case 5:
+                exit(0);
+                break;
+            default:
+                printf("\nOpção não encontrada\n");
+        }
+    }
+}
+
+void clearTerminal() {
+    printf("\033[2J");
+    printf("\033[H");
 }
 
 void welcomeUser() {
@@ -42,4 +64,6 @@ void welcomeUser() {
     printf("* Vamos organizar o seu dia!                         *\n");
     printf("* \n");
     printf("==================================================================\n\n");
+    getchar();
+    clearTerminal();
 }
