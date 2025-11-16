@@ -110,29 +110,36 @@ void createTodo() {
 }
 
 void deleteTodo(int desiredIndex) {
-    todo *temp, *temp1;
+    todo *current, *previous = NULL;
 
-    temp1 = start;
-    temp = start->next;
-
-    while (1) {
-        if (temp1->index == desiredIndex) {
-            start = start->next;
-            free(temp1);
-            fixIndexes();
-            return;
-        }
-
-        if (temp->index == desiredIndex) {
-            temp1->next = temp->next;
-            free(temp);
-            fixIndexes();
-            return;
-        } else {
-            temp1 = temp1->next;
-            temp = temp->next;
-        }
+    if (start == NULL) {
+        printf("\nA lista de tarefas esta vazia.\n");
+        return;
     }
+
+    current = start;
+
+    while (current != NULL && current->index != desiredIndex) {
+        previous = current;
+        current = current->next;
+    }
+
+    if (current == NULL) {
+        printf("\nTarefa %d não encontrada.\n", desiredIndex);
+        return;
+    }
+
+    if (previous == NULL) {
+        // A tarefa a ser deletada é a primeira (start)
+        start = current->next;
+    } else {
+        previous->next = current->next;
+    }
+
+    printf("\nTarefa %d removida com sucesso.\n", desiredIndex);
+    free(current);
+    
+    fixIndexes();
 }
 
 void updateTodo(int desiredIndex) {
