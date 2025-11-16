@@ -21,10 +21,13 @@ void getTodoList();
 void createTodo();
 void fixIndexes();
 void deleteTodo(int desiredIndex);
+void updateTodo(int desiredIndex);
 
 int main() {
     int choice;
     int c;
+    int desiredIndex;
+
     welcomeUser();
     while (1) {
         printf("\n 1 - Ver sua lista de tarefas;");
@@ -44,10 +47,15 @@ int main() {
                 createTodo();
                 break;
             case 3:
-                int desiredIndex;
                 printf("\n Digite o número da tarefa que você deseja remover: ");
                 scanf("%d", &desiredIndex);
                 deleteTodo(desiredIndex);
+                break;
+            case 4:
+                printf("\n Digite o número da tarefa que você deseja editar: ");
+                scanf("%d", &desiredIndex);
+                while ((c = getchar()) != '\n' && c != EOF);
+                updateTodo(desiredIndex);
                 break;
             case 5:
                 exit(0);
@@ -121,8 +129,29 @@ void deleteTodo(int desiredIndex) {
             temp1 = temp1->next;
             temp = temp->next;
         }
-
     }
+}
+
+void updateTodo(int desiredIndex) {
+    todo *temp;
+    char title[100];
+
+    temp = start;
+
+    printf("\n Digite o novo título da tarefa: ");
+    fgets(title, sizeof(title), stdin);
+    // Remove \n
+    size_t len = strlen(temp->title);
+    if (len > 0 && temp->title[len - 1] == '\n') {
+        title[len - 1] = '\0';
+    }
+
+    while (temp->index != desiredIndex) {
+        temp = temp->next;
+    }
+    
+    strcpy(temp->title, title);
+    return;
 }
 
 void getTodoList() {
